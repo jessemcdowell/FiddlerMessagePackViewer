@@ -1,0 +1,12 @@
+[oO]bj/
+[bB]in/
+ClientBin/
+deploy/
+packages/
+*.user
+*.suo
+*.cache
+_ReSharper.*
+*.resharper
+*.DotSettings
+Thumbs.db
