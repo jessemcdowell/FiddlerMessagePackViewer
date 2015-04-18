@@ -1,5 +1,10 @@
 # MsgPackViewer for Fiddler4
 
+# Dependencies
+
+This project is dependent on [Fiddler 4](http://www.telerik.com/fiddler). This project was last tested against Fiddler 4.5.0.0.
+
+
 # Author
 
 This project was created by Jesse McDowell.
