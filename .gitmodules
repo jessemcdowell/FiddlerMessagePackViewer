@@ -1,0 +1,3 @@
+[submodule "MsgPackSlim"]
+	path = MsgPackSlim
+	url = https://github.com/jessemcdowell/MsgPackSlim
