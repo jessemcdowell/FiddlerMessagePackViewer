@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using MsgPackSlim;
+using MsgPackSlim.Formats;
 
 namespace MsgPackViewer
 {
@@ -72,14 +74,52 @@ namespace MsgPackViewer
 
         private TreeNode AddNode(TreeNode parent, MsgPackReader reader)
         {
-            var text = String.Format("{0} ({1})", reader.GetValue(), reader.Format.GetType().Name);
-            var tooltip = String.Format("Format Byte: {0:x2} ({1} bytes)", reader.FormatByte, reader.TotalSize);
+            var formatName = GetFormatName(reader.Format);
+
+            var text = GetNodeText(reader);
+
+            var tooltip = String.Format("{0} ({1:x2}) ({2} bytes)", formatName, reader.FormatByte, reader.TotalSize);
+            if (reader.IsExtended)
+                tooltip += String.Format(" (Extended Type {0})", reader.ExtendedType);
+            if ((reader.ContentSize > 0) && (reader.ContentSize <= 8) && !reader.IsBinary)
+                tooltip += " " + GetHex(reader.ContentBytes);
+
             var node = CreateNode(text, tooltip);
             parent.Nodes.Add(node);
             return node;
         }
 
-        private string GetHex(byte[] data)
+        private static string GetNodeText(MsgPackReader reader)
+        {
+            if (reader.IsArray)
+                return String.Format("Array ({0} items)", reader.ChildObjectCount);
+            if (reader.IsMap)
+                return String.Format("May ({0} items)", reader.ChildObjectCount/2);
+
+            var value = reader.GetValue();
+            if (value == null)
+                return "null";
+
+            var stringValue = value as string;
+            if (stringValue != null)
+                return "\"" + stringValue.Replace("\"", "\\\"").Replace("\0", "\\0") + "\"";
+
+            var byteValue = value as byte[];
+            if (byteValue != null)
+                return GetHex(byteValue);
+
+            return value.ToString();
+        }
+
+        private string GetFormatName(IMsgPackFormat format)
+        {
+            var name = format.GetType().Name;
+            if (name.EndsWith("Format"))
+                return name.Substring(0, name.Length - 6);
+            return name;
+        }
+
+        private static string GetHex(byte[] data)
         {
             var output = new StringBuilder(data.Length*3 - 1);
             foreach (var b in data)
