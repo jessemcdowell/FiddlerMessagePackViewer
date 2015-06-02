@@ -1,8 +1,8 @@
-# MsgPackViewer for Fiddler4
+# MsgPackViewer for Fiddler2 / Fiddler4
 
 # Dependencies
 
-This project is dependent on [Fiddler 4](http://www.telerik.com/fiddler). This project was last tested against Fiddler 4.5.0.0.
+This project is dependent on [Fiddler 2](http://www.telerik.com/fiddler). This project was last tested against Fiddler 2.5.0.0 and 4.5.0.0.
 
 
 # Author
