@@ -67,6 +67,7 @@ namespace MsgPackViewer
 
             tree.Nodes.Add(root);
             tree.ExpandAll();
+            tree.SelectedNode = root;
         }
 
         private TreeNode CreateNode(string text, string toolTip)
