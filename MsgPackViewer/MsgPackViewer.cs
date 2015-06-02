@@ -32,30 +32,36 @@ namespace MsgPackViewer
             using (var stream = new MemoryStream(data))
             using (var reader = new MsgPackReader(stream))
             {
-                while (reader.ReadNext())
+                try
                 {
-                    var node = AddNode(parent, reader);
-                    remainingCount--;
-
-                    if (reader.IsArray || reader.IsMap)
+                    while (reader.ReadNext())
                     {
-                        remainingCountStack.Push(remainingCount);
-                        remainingCount = reader.ChildObjectCount;
-                        parent = node;
+                        var node = AddNode(parent, reader);
+                        remainingCount--;
+
+                        if (reader.IsArray || reader.IsMap)
+                        {
+                            remainingCountStack.Push(remainingCount);
+                            remainingCount = reader.ChildObjectCount;
+                            parent = node;
+                        }
+
+                        while (remainingCount == 0)
+                        {
+                            if (remainingCountStack.Count > 0)
+                                break;
+                            remainingCount = remainingCountStack.Pop();
+                            parent = parent.Parent;
+                        }
                     }
 
-                    while (remainingCount == 0)
-                    {
-                        if (remainingCountStack.Count > 0)
-                            break;
-                        remainingCount = remainingCountStack.Pop();
-                        parent = parent.Parent;
-                    }
+                    if (reader.ReadNext())
+                        throw new Exception("content after the root node");
                 }
-
-                if (reader.ReadNext())
+                catch (Exception ex)
                 {
-                    root.Nodes.Add(CreateNode("content after the root node!", ""));
+                    var message = String.Format("Error at byte {0}: {1}", stream.Position, ex.Message);
+                    root.Nodes.Add(CreateNode(message, ex.ToString()));
                 }
             }
 
