@@ -86,7 +86,7 @@ namespace MsgPackViewer
             var tooltip = String.Format("{0} ({1:x2}) ({2} bytes)", formatName, reader.FormatByte, reader.TotalSize);
             if (reader.IsExtended)
                 tooltip += String.Format(" (Extended Type {0})", reader.ExtendedType);
-            if ((reader.ContentSize > 0) && (reader.ContentSize <= 8) && !reader.IsBinary)
+            else if ((reader.ContentSize > 0) && (reader.ContentSize <= 32) && !reader.IsBinary)
                 tooltip += " " + GetHex(reader.ContentBytes);
 
             var node = CreateNode(text, tooltip);
