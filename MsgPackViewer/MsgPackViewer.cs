@@ -148,5 +148,10 @@ namespace MsgPackViewer
             }
             return output.ToString();
         }
+
+        private void tree_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            e.CancelEdit = true;
+        }
     }
 }

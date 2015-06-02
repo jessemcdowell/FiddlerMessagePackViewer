@@ -36,6 +36,7 @@
             this.tree.BackColor = System.Drawing.Color.AliceBlue;
             this.tree.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tree.LabelEdit = true;
             this.tree.Location = new System.Drawing.Point(0, 0);
             this.tree.Margin = new System.Windows.Forms.Padding(0);
             this.tree.Name = "tree";
@@ -43,6 +44,7 @@
             this.tree.ShowRootLines = false;
             this.tree.Size = new System.Drawing.Size(570, 427);
             this.tree.TabIndex = 0;
+            this.tree.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tree_AfterLabelEdit);
             // 
             // MsgPackViewer
             // 
