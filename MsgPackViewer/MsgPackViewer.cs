@@ -27,7 +27,7 @@ namespace MsgPackViewer
             var root = CreateNode("Root", String.Format("({0} bytes)", data.LongLength));
             var parent = root;
             var remainingCountStack = new Stack<int>();
-            var remainingCount = 0;
+            var remainingCount = 1;
 
             using (var stream = new MemoryStream(data))
             using (var reader = new MsgPackReader(stream))
@@ -46,13 +46,13 @@ namespace MsgPackViewer
                             parent = node;
                         }
 
-                        while (remainingCount == 0)
+                        while ((remainingCount == 0) && (remainingCountStack.Count > 0))
                         {
-                            if (remainingCountStack.Count > 0)
-                                break;
                             remainingCount = remainingCountStack.Pop();
                             parent = parent.Parent;
                         }
+                        if ((remainingCount == 0) && (remainingCountStack.Count == 0))
+                            break;
                     }
 
                     if (reader.ReadNext())
