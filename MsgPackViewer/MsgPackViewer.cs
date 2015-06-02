@@ -99,7 +99,7 @@ namespace MsgPackViewer
             if (reader.IsArray)
                 return String.Format("Array ({0} items)", reader.ChildObjectCount);
             if (reader.IsMap)
-                return String.Format("May ({0} items)", reader.ChildObjectCount/2);
+                return String.Format("Map ({0} items)", reader.ChildObjectCount/2);
 
             var value = reader.GetValue();
             if (value == null)
