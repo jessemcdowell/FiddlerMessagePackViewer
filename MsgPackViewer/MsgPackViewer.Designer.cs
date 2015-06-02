@@ -40,6 +40,7 @@
             this.tree.Margin = new System.Windows.Forms.Padding(0);
             this.tree.Name = "tree";
             this.tree.ShowNodeToolTips = true;
+            this.tree.ShowRootLines = false;
             this.tree.Size = new System.Drawing.Size(570, 427);
             this.tree.TabIndex = 0;
             // 

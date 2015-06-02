@@ -24,8 +24,8 @@ namespace MsgPackViewer
         {
             Clear();
 
-            var root = CreateNode("Root", String.Format("({0} bytes)", data.LongLength));
-            var parent = root;
+            TreeNode root = null;
+            TreeNode parent = null;
             var remainingCountStack = new Stack<int>();
             var remainingCount = 1;
 
@@ -36,7 +36,14 @@ namespace MsgPackViewer
                 {
                     while (reader.ReadNext())
                     {
-                        var node = AddNode(parent, reader);
+                        var node = CreateNode(reader);
+                        if (parent != null)
+                            parent.Nodes.Add(node);
+                        else
+                        {
+                            root = node;
+                            parent = node;
+                        }
                         remainingCount--;
 
                         if (reader.IsArray || reader.IsMap)
@@ -61,13 +68,20 @@ namespace MsgPackViewer
                 catch (Exception ex)
                 {
                     var message = String.Format("Error at byte {0}: {1}", stream.Position, ex.Message);
-                    root.Nodes.Add(CreateNode(message, ex.ToString()));
+                    var node = CreateNode(message, ex.ToString());
+                    if (root == null)
+                        root = node;
+                    else
+                        root.Nodes.Add(node);
                 }
             }
 
-            tree.Nodes.Add(root);
-            tree.ExpandAll();
-            tree.SelectedNode = root;
+            if (root != null)
+            {
+                tree.Nodes.Add(root);
+                tree.ExpandAll();
+                tree.SelectedNode = root;
+            }
         }
 
         private TreeNode CreateNode(string text, string toolTip)
@@ -78,7 +92,7 @@ namespace MsgPackViewer
             };
         }
 
-        private TreeNode AddNode(TreeNode parent, MsgPackReader reader)
+        private TreeNode CreateNode(MsgPackReader reader)
         {
             var formatName = GetFormatName(reader.Format);
 
@@ -90,9 +104,7 @@ namespace MsgPackViewer
             else if ((reader.ContentSize > 0) && (reader.ContentSize <= 32) && !reader.IsBinary)
                 tooltip += " " + GetHex(reader.ContentBytes);
 
-            var node = CreateNode(text, tooltip);
-            parent.Nodes.Add(node);
-            return node;
+            return CreateNode(text, tooltip);
         }
 
         private static string GetNodeText(MsgPackReader reader)
