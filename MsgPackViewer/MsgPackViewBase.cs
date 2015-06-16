@@ -6,6 +6,7 @@ namespace MsgPackViewer
     public abstract class MsgPackViewBase : Inspector2
     {
         private readonly MsgPackViewer _viewer = new MsgPackViewer();
+        private byte[] _decodedBody;
         private byte[] _body;
 
         public override void AddToTab(TabPage o)
@@ -22,6 +23,8 @@ namespace MsgPackViewer
 
         public void Clear()
         {
+            _body = null;
+            _decodedBody = null;
             _viewer.Clear();
         }
 
@@ -31,9 +34,19 @@ namespace MsgPackViewer
             set
             {
                 _body = value;
-                _viewer.DisplayData(value);
+                DisplayData();
             }
         }
+
+        private void DisplayData()
+        {
+            _decodedBody = _body;
+            Utilities.utilDecodeHTTPBody(GetHeaders(), ref _decodedBody);
+
+            _viewer.DisplayData(_decodedBody);
+        }
+
+        protected abstract HTTPHeaders GetHeaders();
 
         public bool bDirty
         {
